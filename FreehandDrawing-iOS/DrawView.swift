@@ -28,8 +28,8 @@ class DrawView : UIView, Canvas, DrawCommandReceiver {
     
     // MARK: Canvas
     
-    var context: CGContextRef {
-        return UIGraphicsGetCurrentContext()
+    var context: CGContext {
+        return UIGraphicsGetCurrentContext()!
     }
     
     func reset() {
@@ -39,41 +39,41 @@ class DrawView : UIView, Canvas, DrawCommandReceiver {
     
     // MARK: DrawCommandReceiver
     
-    func executeCommands(commands: [DrawCommand]) {
+    func executeCommands(_ commands: [DrawCommand]) {
         autoreleasepool {
             self.buffer = drawInContext { context in
                 commands.map { $0.execute(self) }
             }
             
-            self.layer.contents = self.buffer?.CGImage ?? nil
+            self.layer.contents = self.buffer?.cgImage ?? nil
         }
     }
     
     // MARK: General setup to draw. Reusing a buffer and returning a new one
     
-    private func drawInContext(code:(context: CGContextRef) -> Void) -> UIImage {
+    fileprivate func drawInContext(_ code:(_ context: CGContext) -> Void) -> UIImage {
         let size = self.bounds.size
         
         // Initialize a full size image. Opaque because we don't need to draw over anything. Will be more performant.
         UIGraphicsBeginImageContextWithOptions(size, true, 0)
         let context = UIGraphicsGetCurrentContext()
         
-        CGContextSetFillColorWithColor(context, self.backgroundColor?.CGColor ?? UIColor.whiteColor().CGColor)
-        CGContextFillRect(context, self.bounds)
+        context?.setFillColor(self.backgroundColor?.cgColor ?? UIColor.white.cgColor)
+        context?.fill(self.bounds)
         
         // Draw previous buffer first
         if let buffer = buffer {
-            buffer.drawInRect(self.bounds)
+            buffer.draw(in: self.bounds)
         }
     
         // Execute draw code
-        code(context: context)
+        code(context!)
         
         // Grab updated buffer and return it
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
     
-    private var buffer: UIImage?
+    fileprivate var buffer: UIImage?
 }

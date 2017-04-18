@@ -32,10 +32,9 @@ struct CircleDrawCommand : DrawCommand {
     
     // MARK: DrawCommand
     
-    func execute(canvas: Canvas) {
-        CGContextSetFillColorWithColor(canvas.context, self.color.CGColor)
-        
-        CGContextAddArc(canvas.context, self.center.x, self.center.y, self.radius, 0, 2 * CGFloat(M_PI), 1)
-        CGContextFillPath(canvas.context)
+    func execute(_ canvas: Canvas) {
+        canvas.context.setFillColor(self.color.cgColor)
+        canvas.context.addArc(center: self.center, radius: self.radius, startAngle: 0, endAngle: 2 * CGFloat(M_PI), clockwise: true)
+        (canvas.context).fillPath()
     }
 }

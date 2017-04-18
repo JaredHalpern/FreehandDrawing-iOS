@@ -43,7 +43,7 @@ class DrawViewController: UIViewController {
         return self.view as! DrawView
     }
     
-    private var drawController: FreehandDrawController!
+    fileprivate var drawController: FreehandDrawController!
     @IBOutlet var toolbar: Toolbar!
 }
 
