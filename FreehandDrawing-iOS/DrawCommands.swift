@@ -30,9 +30,9 @@ protocol Canvas {
 }
 
 protocol DrawCommand {
-    func execute(canvas: Canvas)
+    func execute(_ canvas: Canvas)
 }
 
 protocol DrawCommandReceiver {
-    func executeCommands(commands: [DrawCommand])
+    func executeCommands(_ commands: [DrawCommand])
 }

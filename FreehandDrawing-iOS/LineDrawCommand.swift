@@ -33,35 +33,35 @@ struct LineDrawCommand : DrawCommand {
 
     // MARK: DrawCommand
     
-    func execute(canvas: Canvas) {
+    func execute(_ canvas: Canvas) {
         self.configure(canvas)
 
-        if let previous = self.previous {
+        if self.previous != nil {
             self.drawQuadraticCurve(canvas)
         } else {
             self.drawLine(canvas)
         }
     }
     
-    private func configure(canvas: Canvas) {
-        CGContextSetStrokeColorWithColor(canvas.context, self.color.CGColor)
-        CGContextSetLineWidth(canvas.context, self.width)
-        CGContextSetLineCap(canvas.context, kCGLineCapRound)
+    fileprivate func configure(_ canvas: Canvas) {
+        canvas.context.setStrokeColor(self.color.cgColor)
+        canvas.context.setLineWidth(self.width)
+        (canvas.context).setLineCap(CGLineCap.round)
     }
     
-    private func drawLine(canvas: Canvas) {
-        CGContextMoveToPoint(canvas.context, self.current.a.x, self.current.a.y)
-        CGContextAddLineToPoint(canvas.context, self.current.b.x, self.current.b.y)
-        CGContextStrokePath(canvas.context)
+    fileprivate func drawLine(_ canvas: Canvas) {
+        canvas.context.move(to: CGPoint(x: self.current.a.x, y: self.current.a.y))
+        canvas.context.addLine(to: CGPoint(x: self.current.b.x, y: self.current.b.y))
+        canvas.context.strokePath()
     }
     
-    private func drawQuadraticCurve(canvas: Canvas) {
+    fileprivate func drawQuadraticCurve(_ canvas: Canvas) {
         if let previousMid = self.previous?.midPoint {
             let currentMid = self.current.midPoint
             
-            CGContextMoveToPoint(canvas.context, previousMid.x, previousMid.y)
-            CGContextAddQuadCurveToPoint(canvas.context, current.a.x, current.a.y, currentMid.x, currentMid.y)
-            CGContextStrokePath(canvas.context)
+            canvas.context.move(to: CGPoint(x: previousMid.x, y: previousMid.y))
+            canvas.context.addQuadCurve(to: CGPoint(x:current.a.x, y:current.a.y), control: currentMid)
+            canvas.context.strokePath()
         }
     }
 }

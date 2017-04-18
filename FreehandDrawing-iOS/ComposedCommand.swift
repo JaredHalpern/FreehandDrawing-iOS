@@ -29,13 +29,13 @@ struct ComposedCommand : DrawCommand {
     
     // MARK: DrawCommand
     
-    func execute(canvas: Canvas) {
+    func execute(_ canvas: Canvas) {
         self.commands.map { $0.execute(canvas) }
     }
     
-    mutating func addCommand(command: DrawCommand) {
+    mutating func addCommand(_ command: DrawCommand) {
         self.commands.append(command)
     }
     
-    private var commands: [DrawCommand]
+    fileprivate var commands: [DrawCommand]
 }
